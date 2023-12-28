@@ -3,9 +3,18 @@ import 'source-map-support/register';
 import * as cdk from 'aws-cdk-lib';
 import { CdkForVendorStack } from '../lib/cdk-for-vendor-stack';
 
+import * as dotenv from 'dotenv';
+const path = require('path');
+dotenv.config({path: path.join(__dirname, "../.env")});
+
 const app = new cdk.App();
-const vendorName = 'vendorA'
-new CdkForVendorStack(app, `CdkFor-${vendorName}-Stack`, {
+const vendorName: string = process.env.Vendor_Name ?? ''
+const serverName: string = process.env.Server_Name ?? ''
+new CdkForVendorStack(app, `CdkFor-${serverName}-Stack`, {
+  env: {
+    account: process.env.CDK_DEFAULT_ACCOUNT,
+    region: process.env.CDK_DEFAULT_REGION,
+  }
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */

@@ -1,0 +1,90 @@
+{
+  "vpc-provider:account=534670130911:filter.vpc-id=vpc-0fdb21b2ba43b05e9:region=ap-northeast-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-0fdb21b2ba43b05e9",
+    "vpcCidrBlock": "10.1.0.0/16",
+    "ownerAccountId": "534670130911",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Vend-vpc-egress",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-02e23599c6f83ff02",
+            "cidr": "10.1.2.0/24",
+            "availabilityZone": "ap-northeast-1a",
+            "routeTableId": "rtb-04a07166200130efb"
+          },
+          {
+            "subnetId": "subnet-0f6f8a7c29f56c0b2",
+            "cidr": "10.1.3.0/24",
+            "availabilityZone": "ap-northeast-1c",
+            "routeTableId": "rtb-0242fde146868f956"
+          }
+        ]
+      },
+      {
+        "name": "Vend-vpc-public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0f1acbc648c4b27a3",
+            "cidr": "10.1.0.0/24",
+            "availabilityZone": "ap-northeast-1a",
+            "routeTableId": "rtb-093d514d36085df94"
+          },
+          {
+            "subnetId": "subnet-06816154b82d0184d",
+            "cidr": "10.1.1.0/24",
+            "availabilityZone": "ap-northeast-1c",
+            "routeTableId": "rtb-0cc7f811f5ffa005a"
+          }
+        ]
+      }
+    ]
+  },
+  "vpc-provider:account=534670130911:filter.vpc-id=vpc-01dafbb2595edce93:region=ap-northeast-1:returnAsymmetricSubnets=true": {
+    "vpcId": "vpc-01dafbb2595edce93",
+    "vpcCidrBlock": "10.1.0.0/16",
+    "ownerAccountId": "534670130911",
+    "availabilityZones": [],
+    "subnetGroups": [
+      {
+        "name": "Vend-vpc-egress",
+        "type": "Private",
+        "subnets": [
+          {
+            "subnetId": "subnet-0a11a0a81a8d6114a",
+            "cidr": "10.1.2.0/24",
+            "availabilityZone": "ap-northeast-1a",
+            "routeTableId": "rtb-04cb09515f0a8b125"
+          },
+          {
+            "subnetId": "subnet-09349308a21370aca",
+            "cidr": "10.1.3.0/24",
+            "availabilityZone": "ap-northeast-1c",
+            "routeTableId": "rtb-0a69065d538fb3351"
+          }
+        ]
+      },
+      {
+        "name": "Vend-vpc-public",
+        "type": "Public",
+        "subnets": [
+          {
+            "subnetId": "subnet-0024fb5cf34886a15",
+            "cidr": "10.1.0.0/24",
+            "availabilityZone": "ap-northeast-1a",
+            "routeTableId": "rtb-0152188b4316f109b"
+          },
+          {
+            "subnetId": "subnet-014d25deb348e95f2",
+            "cidr": "10.1.1.0/24",
+            "availabilityZone": "ap-northeast-1c",
+            "routeTableId": "rtb-0557431af2ba3b538"
+          }
+        ]
+      }
+    ]
+  }
+}

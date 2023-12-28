@@ -1,4 +1,4 @@
-import { RemovalPolicy, Duration, CfnOutput } from 'aws-cdk-lib'
+import { RemovalPolicy, Duration, CfnOutput, Tags } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import {
   aws_ec2 as ec2,
@@ -13,6 +13,8 @@ export class Network extends Construct {
 
   constructor(scope: Construct, id: string) {
     super(scope, id)
+    const vendA = "VendorA"
+    const vendB = "VendorB"
     const medVPCName = "MedI-vpc"
     const vendVPCName = "Vend-vpc"
 
@@ -90,10 +92,17 @@ export class Network extends Construct {
       vpc: this.medVPC,
       allowAllOutbound: true,
     })
+    this.venderA_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.tcp(22))
+    this.venderA_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.icmpType(8))
+    Tags.of(this.venderA_SG).add('Env', vendA)
+
     this.venderB_SG = new ec2.SecurityGroup(this, 'SG-for-VendorB', {
       vpc: this.medVPC,
       allowAllOutbound: true,
     })
+    this.venderB_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.tcp(22))
+    this.venderB_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.icmpType(8))
+    Tags.of(this.venderB_SG).add('Env', vendB)
 
     new CfnOutput(this, 'vendVPCId', {
       value: `${this.vendVPC.vpcId}`,

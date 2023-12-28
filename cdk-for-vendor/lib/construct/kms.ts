@@ -7,7 +7,6 @@ import {
 } from 'aws-cdk-lib';
 
 export interface KMSProps {
-  vpc: ec2.Vpc
   serverName: string
 }
 
