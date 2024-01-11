@@ -1,8 +1,7 @@
 ---
 title: "AWS アカウントから始める"
-weight: 2
+weight: 11
 ---
-# AWS アカウントから始める
 ## AWS アカウントを作成する
 
 :::alert{type="warning"}
@@ -23,22 +22,22 @@ weight: 2
 7. **Users must create a new password** のチェックボックスをオフにします。これにより、このラボの学習が簡単になります。
 8. **Next** をクリック
 
-![IAM User Create 01](/static/01_PreReq/iam-user-01.png)
+![IAM User Create 01](/static/01_PreReq/01_01_AWSAccount/iam-user-01.png)
 
 **Attach policies directly** を選択し、**AdministratorAccess** オプションにチェックマークを付けて **Next** をクリックします
 
-![IAM User Create 02](/static/01_PreReq/iam-user-02.png)
+![IAM User Create 02](/static/01_PreReq/01_01_AWSAccount/iam-user-02.png)
 
-1. AWS 管理ポリシーである AdministratorAccess が管理者ユーザーに追加されていることを確認し、**Create** をクリックします
-2.  ユーザーを作成したら、**login URL** をコピーします。URL の形式は以下のとおりです。 
+9. AWS 管理ポリシーである AdministratorAccess が管理者ユーザーに追加されていることを確認し、**Create** をクリックします
+10.  ユーザーを作成したら、**login URL** をコピーします。URL の形式は以下のとおりです。 
 ```https://<your_aws_account_id>.signin.aws.amazon.com/console```
 
 :::alert{type="warning"}
 <your_aws_account_id>を自分の AWS アカウントの固有 ID に置き換えてください。root ユーザーでラボを続行することはお勧めしません。作成した管理者IAMユーザーでログインして、ラボを続行してください。
 :::
 
-1.  [オプション] この段階で、.csv ファイルをダウンロードして、パスワードやその他のログイン情報を保存することもできます。
+11.  [オプション] この段階で、.csv ファイルをダウンロードして、パスワードやその他のログイン情報を保存することもできます。
 
-![IAM User Create 03](/static/01_PreReq/iam-user-03.png)
+![IAM User Create 03](/static/01_PreReq/01_01_AWSAccount/iam-user-03.png)
 
 12.  root ユーザーからログアウトし、上記でコピーした URL を使用して **先ほど作成した管理者IAMユーザー**としてログインします。

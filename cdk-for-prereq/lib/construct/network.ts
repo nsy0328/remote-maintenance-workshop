@@ -88,7 +88,7 @@ export class Network extends Construct {
     });
 
     // Initial security group for MedVPC Instance (vendor A(Linux) and B(Windows) )
-    this.venderA_SG = new ec2.SecurityGroup(this, 'SG-for-VendorA', {
+    this.venderA_SG = new ec2.SecurityGroup(this, 'SG-for-MedVendorA', {
       vpc: this.medVPC,
       allowAllOutbound: true,
     })
@@ -96,11 +96,11 @@ export class Network extends Construct {
     this.venderA_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.icmpType(8))
     Tags.of(this.venderA_SG).add('Env', vendA)
 
-    this.venderB_SG = new ec2.SecurityGroup(this, 'SG-for-VendorB', {
+    this.venderB_SG = new ec2.SecurityGroup(this, 'SG-for-MedVendorB', {
       vpc: this.medVPC,
       allowAllOutbound: true,
     })
-    this.venderB_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.tcp(22))
+    this.venderB_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.tcp(3389))
     this.venderB_SG.addIngressRule(ec2.Peer.ipv4(this.vendVPC.vpcCidrBlock), ec2.Port.icmpType(8))
     Tags.of(this.venderB_SG).add('Env', vendB)
 

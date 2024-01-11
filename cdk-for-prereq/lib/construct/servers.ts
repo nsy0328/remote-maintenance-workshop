@@ -63,7 +63,6 @@ export class MedServer extends Construct {
       securityGroup: props.vendorA_SG,
       keyName: `${linuxName.toLocaleLowerCase()}-key-pair`
     })
-    Tags.of(linuxServer).add('Env', vendA);
     new CfnOutput(this, `${linuxName}-IP`, {
       value: `${linuxServer.instancePrivateIp}`,
     });
@@ -86,7 +85,6 @@ export class MedServer extends Construct {
     const userDataScript = readFileSync(path.join(__dirname, '../MedWinUserData.ps1'), 'utf8');
     winServer.addUserData(userDataScript);
 
-    Tags.of(winServer).add('Env', vendB);
     new CfnOutput(this, `${winName}-IP`, {
       value: `${winServer.instancePrivateIp}`,
     });
