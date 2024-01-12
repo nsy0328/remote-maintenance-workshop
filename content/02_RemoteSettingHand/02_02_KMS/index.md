@@ -59,7 +59,7 @@ weight: 22
 では、確認ステップで、**タグがついていることを確認**し、完了を押してください。
 
 :::alert{type="warning"}
-今回は設定簡略化のため、、RemoteAccessSetting_AdminRole を使用してますが、実際には細かくロールを分けながら運用しましょう。
+今回は設定簡略化のため、RemoteAccessSetting_AdminRole を使用してますが、実際には細かくロールを分けながら運用しましょう。
 :::
 
 ## EBS の Customer Managed Key を作成
