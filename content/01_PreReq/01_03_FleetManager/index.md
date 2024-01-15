@@ -1,6 +1,6 @@
 ---
 title: "Fleet Manager の設定"
-weight: 13
+weight: 130
 ---
 
 AWS Systems Manager の機能である [Fleet Manager](https://docs.aws.amazon.com/ja_jp/systems-manager/latest/userguide/fleet.html) は統合されたユーザーインターフェイス (UI) エクスペリエンスであり、AWS またはオンプレミスで実行されているノードをリモートで管理するのに役立ちます。

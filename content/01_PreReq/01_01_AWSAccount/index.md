@@ -1,6 +1,6 @@
 ---
 title: "AWS アカウントから始める"
-weight: 11
+weight: 110
 ---
 ## AWS アカウントを作成する
 

@@ -33,3 +33,12 @@ weight = 0
 
 タイトルは、左側のナビゲーションパネルのタイトルになります。重みによって、ページがナビゲーションパネルに表示される順序が決まります。
 
+## その他
+CDK のデプロイ方法について
+
+```shell
+cd cdk-for-prereq
+npm ci
+npx cdk bootstrap
+npx cdk deploy
+```

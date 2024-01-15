@@ -1,6 +1,6 @@
 ---
 title: "AWS Wrokshop Studioから始める"
-weight: 12
+weight: 120
 ---
 ## AWS Workshop Studioポータルでログイン
 

@@ -20,6 +20,7 @@ export class Network extends Construct {
 
     // 医療機関用VPC
     this.medVPC = new ec2.Vpc(scope, medVPCName, {
+      restrictDefaultSecurityGroup: false,
       vpcName: medVPCName,
       ipAddresses: ec2.IpAddresses.cidr('10.0.0.0/16'),
       enableDnsHostnames: true,
@@ -41,6 +42,7 @@ export class Network extends Construct {
     })
     // Vendor VPC
     this.vendVPC = new ec2.Vpc(scope,vendVPCName, {
+      restrictDefaultSecurityGroup: false,
       vpcName: vendVPCName,
       ipAddresses: ec2.IpAddresses.cidr('10.1.0.0/16'),
       enableDnsHostnames: true,
