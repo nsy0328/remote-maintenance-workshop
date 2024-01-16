@@ -9,9 +9,11 @@ export class VendorUser extends Construct {
     super(scope, id)
     const VendorAUser = new iam.User(this, "VendorA-MFAUser", {
       userName: "VendorA-MFAUser",
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMUserChangePassword")]
     })
     const VendorBUser = new iam.User(this, "VendorB-MFAUser", {
       userName: "VendorB-MFAUser",
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMUserChangePassword")]
     })
 
     const MFAPolicyStatement = new iam.PolicyStatement({
@@ -26,10 +28,11 @@ export class VendorUser extends Construct {
       ],
       sid: "AllowRegisterMFADevice"
     })
-
+    
     VendorAUser.addToPolicy(MFAPolicyStatement)
     VendorBUser.addToPolicy(MFAPolicyStatement)
-    VendorAUser.addManagedPolicy(iam.ManagedPolicy.fromManagedPolicyName(scope,id,"IAMUserChangePassword"))
-    VendorBUser.addManagedPolicy(iam.ManagedPolicy.fromManagedPolicyName(scope,id,"IAMUserChangePassword"))
+
+    new CfnOutput(this, "VendorA-UserName", { value: VendorAUser.userName })
+    new CfnOutput(this, "VendorB-UserName", { value: VendorBUser.userName })
   }
 }
