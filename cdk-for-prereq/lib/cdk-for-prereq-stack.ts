@@ -1,6 +1,6 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { Network, MedServer, VendorRoles } from './construct';
+import { Network, MedServer, VendorUser } from './construct';
 // import * as sqs from 'aws-cdk-lib/aws-sqs';
 
 export class CdkForPrereqStack extends cdk.Stack {
@@ -11,7 +11,7 @@ export class CdkForPrereqStack extends cdk.Stack {
     const {medVPC, vendVPC, venderA_SG, venderB_SG} = new Network(this, "Network")
 
     // IAM
-    const iamRoles = new VendorRoles(this, "VendorRoles")
+    const iamUser = new VendorUser(this, "Vendor-MFAUser")
 
     const medServer = new MedServer(this, "MedServer", {
       medVPC: medVPC,

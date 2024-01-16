@@ -1,27 +1,46 @@
-import { RemovalPolicy, Duration } from 'aws-cdk-lib'
+import { RemovalPolicy, Duration, CfnOutput } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import {
   aws_iam as iam,
 } from 'aws-cdk-lib';
 
-export class VendorRoles extends Construct {
+export class VendorUser extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id)
-    
-    // Create S3 list put get policy
-    const S3ListPutGetPolicy = new iam.Policy(this, 'S3ListPutGetPolicy', {
-      policyName: 'S3ListPutGetPolicy',
-      statements: [
-        new iam.PolicyStatement({
-          sid: 'S3ListPutGetPolicy',
-          resources: ['*'],
-          actions: ['s3:ListBucket', 's3:PutObject', 's3:GetObject'],
-        }),
-      ],
+    const VendorAUser = new iam.User(this, "VendorA-MFAUser", {
+      userName: "VendorA-MFAUser",
+      password: iam.SecretValue.unsafePlainText("vendAPW0000!"),
+      passwordResetRequired: false
     })
-    // Create Fleet Manager Connect policy
-    
+    const VendorBUser = new iam.User(this, "VendorB-MFAUser", {
+      userName: "VendorB-MFAUser",
+      password: iam.SecretValue.unsafePlainText("vendBPW0000!"),
+      passwordResetRequired: false
+    })
 
-    // Create 
+    const MFAPolicyStatement = new iam.PolicyStatement({
+      resources: ["*"],
+      effect: iam.Effect.ALLOW,
+      actions: [
+        "iam:DeleteVirtualMFADevice",
+        "iam:EnableMFADevice",
+        "iam:CreateVirtualMFADevice",
+        "iam:DeactivateMFADevice",
+        "iam:ResyncMFADevice"
+      ],
+      sid: "AllowRegisterMFADevice"
+    })
+
+    VendorAUser.addToPolicy(MFAPolicyStatement)
+    VendorBUser.addToPolicy(MFAPolicyStatement)
+    VendorAUser.addManagedPolicy(iam.ManagedPolicy.fromManagedPolicyName("IAMUserChangePassword"))
+    VendorBUser.addManagedPolicy(iam.ManagedPolicy.fromManagedPolicyName("IAMUserChangePassword"))
+  
+    new CfnOutput(this, 'VendorA-MFAUser Password', {
+      value: "vendAPW0000!",
+    });
+    new CfnOutput(this, 'vendorB-SGId', {
+      value: "vendBPW0000!",
+    });
   }
 }
