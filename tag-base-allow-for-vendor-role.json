@@ -5,8 +5,7 @@
 			"Effect": "Allow",
 			"Action": [
 				"s3:ListAllMyBuckets",
-				"ec2:Describe*",
-				"kms:DescribeKey",
+				"ec2:DescribeInstances",
 				"ssm-guiconnect:*",
 				"ssm:DescribeSessions",
 				"ssm:GetConnectionStatus",
@@ -34,24 +33,34 @@
 				"s3:PutObject"
 			],
 			"Resource": [
-				"arn:aws:s3:::remote-sample-bucket/*",
-				"arn:aws:s3:::remote-sample-bucket"
+				"arn:aws:s3:::s3-vendor-b-230112/*",
+				"arn:aws:s3:::s3-vendor-b-230112"
 			]
 		},
 		{
 			"Effect": "Allow",
 			"Action": [
-				"ssm:StartSession",
+				"ssm:StartSession"
+			],
+			"Resource": [
+				"arn:aws:ec2:*:*:instance/*"
+			],
+			"Condition": {
+					"StringEquals": {
+							"ssm:resourceTag/Env": "VendorB"
+					}
+			}
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
 				"kms:Decrypt",
 				"kms:GenerateDataKey"
 			],
 			"Resource": "*",
 			"Condition": {
-				"Null": {
-					"aws:ResourceTag/Env": false
-				},
-				"StringEqualsIfExists": {
-					"aws:ResourceTag/Env": "VendorB"
+				"StringEquals": {
+					"aws:ResourceTag/Env": "${aws:PrincipalTag/Env}"
 				}
 			}
 		}

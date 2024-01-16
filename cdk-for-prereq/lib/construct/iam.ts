@@ -29,6 +29,7 @@ export class VendorUser extends Construct {
         "iam:DeleteVirtualMFADevice",
         "iam:EnableMFADevice",
         "iam:ListMFADevices",
+        "iam:ListVirtualMFADevices",
         "iam:CreateVirtualMFADevice",
         "iam:DeactivateMFADevice",
         "iam:ResyncMFADevice"

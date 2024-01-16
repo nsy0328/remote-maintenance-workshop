@@ -1,5 +1,5 @@
 ---
-title: "踏み台サーバ (EC2) の設定"
+title: "c. 踏み台サーバ (EC2) の設定"
 weight: 243
 ---
 
@@ -56,12 +56,10 @@ Amazon EC2 では、異なるユースケースに合わせて最適化された
 t2.micro が選択されていることを確認
 
 ### 3-4. キーペアの設定
-本ハンズオンでは、スクリプトでEC2インスタンス内の設定を自動で行い、AWS Systems Manager Fleet Manager でEC2インスタンスに接続を行う為、SSHキーペア(SSHでのログイン)は使用しません。
+本ハンズオンでは、AWS Systems Manager Fleet Manager で EC2 インスタンスに接続を行います。
+Windows Remote Desktop Access の接続ではキーペアまたはユーザ認証情報が必要になりますが、今回はユーザデータでリモート接続用のユーザとパスワードを設定するため、キーペアなしで作成してください。
 
 ![ec2-keypair](/static/02_RemoteSettingHand/02_04_EC2/ec2_keypair.png)
-
-**設定項目**
-「キーペア名」に キーペアなしで続行 を選択
 
 ### 3-5. ネットワーク設定
 作成する EC2 インスタンスを、egressSubnet 上に作成するため、ネットワーク設定とファイアーウォール(セキュリティグループ)の設定を行います。
@@ -96,10 +94,36 @@ t2.micro が選択されていることを確認
 サイズなどはデフォルト のまま (30GB/gp2 ルートボリューム) とし、暗号化済み、および暗号化に利用する KMS キーに **EBS-KMS-VendB** を選択します。
 
 
-## 3-7. 高度な設定（ IAM ロールの設定とWordPressの自動インストール ）
+## 3-7. 高度な設定
+### 3-7-1. 「高度な詳細」を展開
+![addvanced](/static/02_RemoteSettingHand/02_04_EC2/Advanced.png)
+**高度な詳細** をクリックして展開します
+
+### 3-7-2. IAM ロールの設定
 Fleet Manager がこの EC2 インスタンスを制御できるようにするため、[a. IAM Role の作成](../02_04_01_IAM/index.md) で作成した **BastionWinRole-VendorB** をインスタンスプロファイルとして選択します。
 
 ![ec2-role](/static/02_RemoteSettingHand/02_04_EC2/ec2_role.png)
+
+### 3-7-3. ユーザーデータ
+![ec2-userdata](/static/02_RemoteSettingHand/02_04_EC2/ec2_userdata.png)
+
+RDP で踏み台サーバにログインする際のユーザとパスワードを作成します。
+
+```powershell
+<powershell>
+# Create RDP User
+Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -name "ConsentPromptBehaviorAdmin"  -value "0"
+Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -name "EnableLUA" -value "0"
+Set-ItemProperty "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System" -name "PromptOnSecureDesktop" -value "0"
+Start-Process -FilePath "net" -ArgumentList "user bastionuser Bastion123! /add" -Verb runAs
+Start-Process -FilePath "net" -ArgumentList "localgroup Administrators bastionuser /add" -Verb runAs
+</powershell>
+```
+
+作成されるユーザーとパスワードは以下の通りです。
+踏み台サーバに接続する際に利用するため、メモをとっておいてください。
+- **ユーザネーム** : bastionuser
+- **パスワード** : Bastion123!
 
 ---
 以上で EC2 インスタンスの作成は終わりです。

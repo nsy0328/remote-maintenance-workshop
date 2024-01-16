@@ -1,5 +1,5 @@
 ---
-title: "リモート接続環境管理ロールの設定"
+title: "5. リモート接続環境管理ロールの設定"
 weight: 250
 ---
 
@@ -67,6 +67,7 @@ weight: 250
 			]
 		},
 		{
+			"Sid": "S3",
 			"Effect": "Allow",
 			"Action": [
 				"s3:ListBucket",
@@ -75,8 +76,8 @@ weight: 250
 				"s3:PutObject"
 			],
 			"Resource": [
-				"arn:aws:s3:::s3-vendor-b-yymmdd/*",
-				"arn:aws:s3:::s3-vendor-b-yymmdd"
+				"arn:aws:s3:::s3-vendor-b-230112/*",
+				"arn:aws:s3:::s3-vendor-b-230112"
 			]
 		},
 		{
@@ -92,7 +93,7 @@ weight: 250
 					"aws:ResourceTag/Env": false
 				},
 				"StringEqualsIfExists": {
-					"aws:ResourceTag/Env": "VendorB"
+					"aws:ResourceTag/Env": "${aws:PrincipalTag/Env}"
 				}
 			}
 		}
@@ -146,14 +147,32 @@ weight: 250
 ![iam-create](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_create.png)
 
 **設定項目**
-- **信頼されたエンティティタイプ** : **AWS アカウント** 
-- **AWS アカウント** : **このアカウント**
-- **MFAが必要** : Checked
+- **信頼されたエンティティタイプ** : **カスタム信頼ポリシー** 
+- **カスタム信頼ポリシー** : 以下 json (アカウント番号を変更)
 
-を選択し、次へを押してください。
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::123456789012:user/VendorB-MFAUser"
+            },
+            "Action": "sts:AssumeRole",
+            "Condition": {
+                "Bool": {
+                    "aws:MultiFactorAuthPresent": "true"
+                }
+            }
+        }
+    ]
+}
+```
+arn:aws:iam::123456789012:user/VendorB-MFAUser のアカウント番号を自分のものに変更の上、JSONを記載し、次へを押してください。
 
 :::alert{type="warning"}
-実際にロールの作成を行う際は、ベンダーが保持している AWSアカウントをエンティティとして登録します。
+実際にロールの作成を行う際は、ベンダーが保持している AWSアカウント、ユーザをプリンシパルとして登録します。
 本ワークショップではアカウントが1つしかないため、このアカウントで作成しています。
 :::
 

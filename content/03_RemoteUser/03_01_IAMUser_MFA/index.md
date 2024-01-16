@@ -69,4 +69,17 @@ weight: 310
 ### 3-4. QR コードによる MFA デバイスの登録
 ![mfa-device-setting](/static/03_RemoteUser/03_01_IAMUserMFA/mfa_device_setting.png)
 
-QR コードを表示から、QR コードを表示し、Google Authenticator、Duo Mobile、Authy アプリなどの互換性のあるアプリケーションを、モバイルデバイス
+QR コードを表示から、QR コードを表示し、Google Authenticator、Duo Mobile、Authy アプリなどの互換性のあるアプリケーションから 2 つの MFA コードを入力してください。
+
+### 3-5. Google Authenticator の場合
+![google-authenticator](/static/03_RemoteUser/03_01_IAMUserMFA/google_authenticator.png)
+
+Application をインストールし、表示した QR コードをスキャンすると 6 桁の数字が確認できます。
+こちらの 6 桁の数字は一定時間で切り替わるので、MFA コード 1、コード 2 の順に入力すると MFA デバイスを登録できます。
+
+---
+設定が完了すると以下のようなメッセージが確認できます。
+![mfa-setting-success](/static/03_RemoteUser/03_01_IAMUserMFA/mfa_setting_success.png)
+
+---
+以上で MFA の設定が完了しました。
