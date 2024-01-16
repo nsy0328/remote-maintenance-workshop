@@ -1,13 +1,11 @@
 ---
-title: "リモート接続環境管理ロールの設定"
-weight: 250
+title: "リモート接続環境用 IAM User の設定"
+weight: 310
 ---
 
-## リモート接続環境の Vendor 接続ロールを作成する。
+このセッションでは、事前準備の CloudFormation で作成した IAM User の MFA および、パスワードを設定し、 Vendor が踏み台サーバを利用する際に利用する IAM User の設定を行います。
 
-このセッションでは Vendor が踏み台サーバを利用する際、各アカウントから接続するためのロールを作成する。
-ロールに与える権限は、各ベンダー専用のS3バケットへのデータlist/put/get、EC2への Fleet Manager/Session Manager 接続、EC2シャットダウン、KMSキーの複合化の権限のみを定義し、
-自社の利用する踏み台サーバやS3にのみ接続できる環境を作成します。
+::alert[実際に、IAM User を用意するのは各 Vendor になります。接続するためのアカウントを発行してもらい、接続用ロールのプリンシパルにユーザを指定してください。]
 
 ## 1. IAM 管理ページを開く
 ![iam-search](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_search.png)
@@ -15,173 +13,60 @@ weight: 250
 [コンソールのホーム画面](https://console.aws.amazon.com/console) から画面上部のサービス検索バーに移動し、「IAM」と入力して検索し、IAM サービスを選択します。
 
 ---
-## 2. IAM Policy の作成
+## 2. IAM User の 設定を行う。
 
-1. ここから、画面の左側または中央のタブで Policy を選択します。
+1. ここから、画面の左側または中央のタブで ユーザー を選択します。
 
-![iam-console](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_console.png)
+![iam-console](/static/03_RemoteUser/03_01_IAMUserMFA/iam_console.png)
 
-2. 次のページで **ポリシーを作成** を選択してください
+2. ユーザー一覧の中のユーザー名 **VendorB-MFAUser** をクリックしてください。
 
-![policy-create-button](/static/02_RemoteSettingHand/02_05_ConnectRole/policy_create_button.png)
+![iam-user](/static/03_RemoteUser/03_01_IAMUserMFA/iam_user.png)
+
+3. **VendorB-MFAUser** のコンソールアクセスを有効化するため、セキュリティ認証情報タブのコンソールアクセスを有効をクリックしてください。
+
+![iam-user-console-enable](/static/03_RemoteUser/03_01_IAMUserMFA/iam_user_console_enable.png)
+
+4. **コンソールアクセスを管理**から、パスワードを設定し、コンソールアクセスを有効化します。
+
+![iam-user-pw](/static/03_RemoteUser/03_01_IAMUserMFA/iam_user_pw.png)
+
+**設定項目**
+- **コンソールを通じたアクセス** : 有効化
+- **パスワードを設定** :
+  - **カスタムパスワード** vendBPW0000!
 
 ---
-## 3. IAM Policy の設定入力
-### 3-1.  アクセス許可を指定
+以下のような画像が出てきたら有効化完了です。
 
-2. 許可タブ内の、許可ポリシーの枠に、許可を追加の項目があるため、そちらから**インラインポリシーを作成**を選択してください。
-
-![add-policy](/static/02_RemoteSettingHand/02_05_ConnectRole/add_policy.png)
-
-3. ポリシーエディターを JSON に変更し、以下のバケットネームと kms の ARN を指定し、次へを押してください。
-```json
-{
-	"Version": "2012-10-17",
-	"Statement": [
-		{
-			"Effect": "Allow",
-			"Action": [
-				"s3:ListAllMyBuckets",
-				"ec2:DescribeInstances",
-				"ssm-guiconnect:*",
-				"ssm:DescribeSessions",
-				"ssm:GetConnectionStatus",
-				"ssm:DescribeInstanceProperties",
-				"ssm:DescribeInstanceInformation"
-			],
-			"Resource": "*",
-      "Condition": {
-        "Bool": {
-        "aws:MultiFactorAuthPresent": "true"
-        }
-      }
-		},
-		{
-			"Effect": "Allow",
-			"Action": [
-					"ssm:TerminateSession",
-					"ssm:ResumeSession"
-			],
-			"Resource": [
-					"arn:aws:ssm:*:*:session/${aws:username}-*"
-			]
-		},
-		{
-			"Effect": "Allow",
-			"Action": [
-				"s3:ListBucket",
-				"s3:GetObject",
-				"s3:DeleteObject",
-				"s3:PutObject"
-			],
-			"Resource": [
-				"arn:aws:s3:::s3-vendor-b-yymmdd/*",
-				"arn:aws:s3:::s3-vendor-b-yymmdd"
-			]
-		},
-		{
-			"Effect": "Allow",
-			"Action": [
-				"ssm:StartSession",
-				"kms:Decrypt",
-				"kms:GenerateDataKey"
-			],
-			"Resource": "*",
-			"Condition": {
-				"Null": {
-					"aws:ResourceTag/Env": false
-				},
-				"StringEqualsIfExists": {
-					"aws:ResourceTag/Env": "VendorB"
-				}
-			}
-		}
-	]
-}
-```
-
-**設定項目**
-- **your-bucket** : s3-vendor-b-yymmdd (先ほど作成した S3 のバケットネーム)
+![iam-user-console-enable](/static/03_RemoteUser/03_01_IAMUserMFA/iam_user_console_enable.png)
 
 ---
-### 3-2. ポリシー名の設定
+## 3. MFA の設定
+### 3-1. IAM User でログイン
+![user-login](/static/03_RemoteUser/03_01_IAMUserMFA/user_login.png)
 
-![policy-name](/static/02_RemoteSettingHand/02_05_ConnectRole/policy_name.png)
+コンソールアクセスの設定が終了した際に表示された URL (例 : https://123456789012.signin.aws.amazon.com/console) からログインしていきます。
+ユーザ名はコンソールアクセスを有効化した **VendorB-MFAUser**、パスワードは先ほど設定した **vendBPW0000!** でログインしてください。
 
-作成した S3 ReadWrite のポリシーに名前をつけます。
+### 3-2. Multifactor Authentication (MFA) の設定
+![mfa-setting](/static/03_RemoteUser/03_01_IAMUserMFA/mfa_setting.png)
 
-**設定項目**
-- **ポリシー名** : RemoteAccessPolicy-VendorB
-- **説明** : Remote Access Policy for VendorB
+画面右上のアカウント ID が表示されている欄をクリックすると、セキュリティ認証情報を設定できます。
 
-### 3-3. タグの設定
+### 3-3. Multifactor Authentication (MFA) の割り当て
+![mfa-enable](/static/03_RemoteUser/03_01_IAMUserMFA/mfa_enable.png)
+![mfa-enable2](/static/03_RemoteUser/03_01_IAMUserMFA/mfa_enable2.png)
 
-![policy-tag](/static/02_RemoteSettingHand/02_05_ConnectRole/policy_tag.png)
+こちらの MFA を割り当てるのボタン、またはページ中央あたりに存在する MFA デバイスの割り当てボタンから設定ができます。
 
-こちらも忘れずにタグをつけ、ポリシーを作成してください。
-
-**設定項目**
-- **タグ** :
-  - **タグキー** : Env
-  - **タグ値** : VendorB
-
----
-
-## 4. IAM Role の作成
-
-引き続き、ロールの作成をしていきます。
-
-1. 画面の左側または中央のタブで Roles を選択します。
-
-![iam-console](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_console.png)
-
-2. 次のページで **ロールを作成** を選択してください
-
-![role-create-button](/static/02_RemoteSettingHand/02_05_ConnectRole/role_create_button.png)
-
----
-
-## 5. IAM Role の設定入力
-### 5-1. Role の種類を選択
-![iam-create](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_create.png)
+![mfa-device-select](/static/03_RemoteUser/03_01_IAMUserMFA/mfa_device_select.png)
 
 **設定項目**
-- **信頼されたエンティティタイプ** : **AWS アカウント** 
-- **AWS アカウント** : **このアカウント**
-- **MFAが必要** : Checked
+- **デバイス名** : RemoteAccessMFADevice-VendorB
+- **MFA device** : Authenticator app
 
-を選択し、次へを押してください。
+### 3-4. QR コードによる MFA デバイスの登録
+![mfa-device-setting](/static/03_RemoteUser/03_01_IAMUserMFA/mfa_device_setting.png)
 
-:::alert{type="warning"}
-実際にロールの作成を行う際は、ベンダーが保持している AWSアカウントをエンティティとして登録します。
-本ワークショップではアカウントが1つしかないため、このアカウントで作成しています。
-:::
-
-### 5-2. Role に許可を追加
-![role-add-policy](/static/02_RemoteSettingHand/02_05_ConnectRole/role_add_policy.png)
-
-4までの手順で作成した、**RemoteAccessPolicy-VendorB** を Role にアタッチし、次へを押してください。
-
-**設定項目**
-- **ポリシー名** :  RemoteAccessPolicy-VendorB
-
-### 5-3. Role 名とタグの設定
-![role-name](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_role_name.png)
-
-続けて、自分の役割に名前を付けてください。 
-**RemoteAccessRole_VendorB** と入力し、簡単な説明をつけましょう。
-
-こちらもタグを忘れずにつけたら、**ロールを作成** を押してください。
-![role-tag](/static/02_RemoteSettingHand/02_05_ConnectRole/role_tag.png)
-
-**設定項目**
-- **ロール名** :  RemoteAccessRole_VendorB
-- **説明** : Remote Access Role for Vendor B
-- **タグ** :
-  - **タグキー** : Env
-  - **タグ値** : VendorB
-
-これで、IAM コンソールのロールセクションにリダイレクトされます。その後、検索バーを使用して IAM ロールが作成されたことを確認できます。
-自分の役割をクリックして確認してください。
-
----
+QR コードを表示から、QR コードを表示し、Google Authenticator、Duo Mobile、Authy アプリなどの互換性のあるアプリケーションを、モバイルデバイス

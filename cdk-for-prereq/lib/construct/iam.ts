@@ -11,6 +11,12 @@ export class VendorUser extends Construct {
       userName: "VendorA-MFAUser",
       managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMUserChangePassword")]
     })
+    // create user which can access management console
+    const VendorAManagementUser = new iam.User(this, "VendorA-ManagementUser", {
+      userName: "VendorA-ManagementUser",
+      managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("AdministratorAccess")]
+    })
+
     const VendorBUser = new iam.User(this, "VendorB-MFAUser", {
       userName: "VendorB-MFAUser",
       managedPolicies: [iam.ManagedPolicy.fromAwsManagedPolicyName("IAMUserChangePassword")]
@@ -22,6 +28,7 @@ export class VendorUser extends Construct {
       actions: [
         "iam:DeleteVirtualMFADevice",
         "iam:EnableMFADevice",
+        "iam:ListMFADevices",
         "iam:CreateVirtualMFADevice",
         "iam:DeactivateMFADevice",
         "iam:ResyncMFADevice"
