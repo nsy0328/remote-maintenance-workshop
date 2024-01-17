@@ -49,12 +49,14 @@ weight: 250
 				"ssm:DescribeInstanceProperties",
 				"ssm:DescribeInstanceInformation"
 			],
-			"Resource": "*",
-      "Condition": {
-        "Bool": {
-        "aws:MultiFactorAuthPresent": "true"
-        }
-      }
+			"Resource": "*"
+		},
+		{
+			"Effect": "Allow",
+			"Action": [
+				"ssm:StartSession"
+			],
+			"Resource": "arn:aws:ssm:*:*:document/AWS-StartPortForwardingSession"
 		},
 		{
 			"Effect": "Allow",
@@ -67,7 +69,6 @@ weight: 250
 			]
 		},
 		{
-			"Sid": "S3",
 			"Effect": "Allow",
 			"Action": [
 				"s3:ListBucket",
@@ -76,8 +77,8 @@ weight: 250
 				"s3:PutObject"
 			],
 			"Resource": [
-				"arn:aws:s3:::s3-vendor-b-230112/*",
-				"arn:aws:s3:::s3-vendor-b-230112"
+				"arn:aws:s3:::s3-vendor-b-yymmdd/*",
+				"arn:aws:s3:::s3-vendor-b-yymmdd"
 			]
 		},
 		{
@@ -89,10 +90,7 @@ weight: 250
 			],
 			"Resource": "*",
 			"Condition": {
-				"Null": {
-					"aws:ResourceTag/Env": false
-				},
-				"StringEqualsIfExists": {
+				"StringEquals": {
 					"aws:ResourceTag/Env": "${aws:PrincipalTag/Env}"
 				}
 			}

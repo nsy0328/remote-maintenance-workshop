@@ -23,11 +23,21 @@ weight: 310
 
 ![iam-user](/static/03_RemoteUser/03_01_IAMUserMFA/iam_user.png)
 
-3. **VendorB-MFAUser** のコンソールアクセスを有効化するため、セキュリティ認証情報タブのコンソールアクセスを有効をクリックしてください。
+### 2-1. タグの設定
+1. コスト管理用のタグを設定するため、タグのタブから **新しいタグを追加する** をクリックしてください。
+
+![tag-tab](/static/03_RemoteUser/03_01_IAMUserMFA/tag_tab.png)
+
+2. コスト管理用のタグを設定するため、タグのタブから **新しいタグを追加する** をクリックしてください。
+
+![tag-setting](/static/03_RemoteUser/03_01_IAMUserMFA/tag_setting.png)
+
+### 2-2. コンソールアクセスの設定
+1. **VendorB-MFAUser** のコンソールアクセスを有効化するため、セキュリティ認証情報タブのコンソールアクセスを有効をクリックしてください。
 
 ![iam-user-console-enable](/static/03_RemoteUser/03_01_IAMUserMFA/iam_user_console_enable.png)
 
-4. **コンソールアクセスを管理**から、パスワードを設定し、コンソールアクセスを有効化します。
+2. **コンソールアクセスを管理**から、パスワードを設定し、コンソールアクセスを有効化します。
 
 ![iam-user-pw](/static/03_RemoteUser/03_01_IAMUserMFA/iam_user_pw.png)
 

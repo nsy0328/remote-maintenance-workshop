@@ -1,6 +1,6 @@
 ---
 title: "CloudFormation スタックを起動する"
-weight: 14
+weight: 140
 ---
 続いて、CloudFormationにより、今回の医療機関側のサーバの設定、およびリモート接続のためのAWS環境（VPC）を作成します。
 
