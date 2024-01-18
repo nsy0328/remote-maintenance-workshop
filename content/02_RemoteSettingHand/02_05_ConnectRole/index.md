@@ -1,13 +1,13 @@
 ---
-title: "5. リモート接続環境管理ロールの設定"
+title: "5. リモート接続環境のベンダー接続ロールの設定"
 weight: 250
 ---
 
-## リモート接続環境の Vendor 接続ロールを作成する。
-
 このセッションでは Vendor が踏み台サーバを利用する際、各アカウントから接続するためのロールを作成します。
-ロールに与える権限は、各ベンダー専用のS3バケットへのデータlist/put/get、EC2への Fleet Manager/Session Manager 接続、EC2シャットダウン、KMSキーの複合化の権限のみを定義し、
+ロールに与える権限は、各ベンダー専用のS3バケットへのデータlist/put/get、EC2への Fleet Manager/Session Manager 接続、EC2シャットダウン、起動テンプレートからの起動、KMSキーの複合化の権限のみを定義し、
 自社の利用する踏み台サーバやS3にのみ接続できる環境を作成します。
+
+---
 
 ## 1. IAM 管理ページを開く
 ![iam-search](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_search.png)
@@ -42,7 +42,8 @@ weight: 250
 			"Effect": "Allow",
 			"Action": [
 				"s3:ListAllMyBuckets",
-				"ec2:DescribeInstances",
+				"ec2:Describe*",
+				"ec2:RunInstances",
 				"ssm-guiconnect:*",
 				"ssm:DescribeSessions",
 				"ssm:GetConnectionStatus",
@@ -50,6 +51,19 @@ weight: 250
 				"ssm:DescribeInstanceInformation"
 			],
 			"Resource": "*"
+		},
+		{
+			"Sid": "AllowCreateTagOnlyWhenLaunchFromLT",
+			"Effect": "Allow",
+			"Action": [
+				"ec2:CreateTags"
+			],
+			"Resource": "arn:aws:ec2:*:*:instance/*",
+			"Condition": {
+					"ForAnyValue:Bool": {
+							"ec2:IsLaunchTemplateResource": "true"
+					}
+			}
 		},
 		{
 			"Effect": "Allow",
@@ -77,16 +91,35 @@ weight: 250
 				"s3:PutObject"
 			],
 			"Resource": [
-				"arn:aws:s3:::s3-vendor-b-yymmdd/*",
-				"arn:aws:s3:::s3-vendor-b-yymmdd"
+				"arn:aws:s3:::<your-bucket-name>/*",
+				"arn:aws:s3:::<your-bucket-name>"
 			]
 		},
 		{
 			"Effect": "Allow",
+			"Action": "iam:PassRole",
+			"Resource": "arn:aws:iam::<account-id>:role/<your-ec2-role-name>",
+			"Condition": {
+					"StringEquals": {
+							"iam:PassedToService": [
+									"ec2.amazonaws.com"
+							]
+					}
+			}
+		},
+		{
+			"Effect": "Allow",
 			"Action": [
+				"ec2:StartInstances",
+				"ec2:StopInstances",
+				"ec2:RebootInstances",
+				"ec2:TerminateInstances",
 				"ssm:StartSession",
-				"kms:Decrypt",
-				"kms:GenerateDataKey"
+				"kms:CreateGrant",
+        "kms:Decrypt",
+				"kms:GenerateDataKey",
+        "kms:GenerateDataKeyWithoutPlaintext",
+        "kms:ReEncrypt*"
 			],
 			"Resource": "*",
 			"Condition": {
@@ -94,13 +127,38 @@ weight: 250
 					"aws:ResourceTag/Env": "${aws:PrincipalTag/Env}"
 				}
 			}
+		},
+		{
+			"Sid": "DenyLaunchFromOtherLT",
+			"Effect": "Deny",
+			"Action": "ec2:RunInstances",
+			"Resource": "arn:aws:ec2:*:<account-id>:launch-template/*",
+			"Condition": {
+					"ForAnyValue:ArnNotEquals": {
+							"ec2:LaunchTemplate": "arn:aws:ec2:*:<account-id>:launch-template/<your-launch-template-id>"
+					}
+			}
+		},
+		{
+			"Sid": "DenyLaunchFromWithoutLT",
+			"Effect": "Deny",
+			"Action": "ec2:RunInstances",
+			"Resource": "arn:aws:ec2:*:*:instance/*",
+			"Condition": {
+					"ForAnyValue:Bool": {
+							"ec2:IsLaunchTemplateResource": "false"
+					}
+			}
 		}
 	]
 }
 ```
 
 **設定項目**
-- **your-bucket** : s3-vendor-b-yymmdd (先ほど作成した S3 のバケットネーム)
+- **<account-id>** : 123456789012 (コンソール画面右上から確認できる12桁のアカウント番号)
+- **<your-bucket-name>** : s3-vendor-b-yymmdd ([3. 静的ファイル保存ストレージ (S3)の作成](../02_03_S3/index.md)で作成した S3 のバケットネーム)
+- **<your-ec2-role-name>** : BastionWinRole-VendorB ([a. IAM Role の作成](../02_04_EC2/02_04_01_IAM/index.md)で作成した EC2 のロール)
+- **<your-launch-template-id>** : lt-xxxxxxxxxxxxxxxxx ([d. 起動テンプレートの作成](../02_04_EC2/02_04_04_Temp/index.md) で作成した 起動テンプレートのid)
 
 ---
 ### 3-2. ポリシー名の設定
@@ -155,7 +213,7 @@ weight: 250
         {
             "Effect": "Allow",
             "Principal": {
-                "AWS": "arn:aws:iam::123456789012:user/VendorB-MFAUser"
+                "AWS": "arn:aws:iam::<account-id>:user/VendorB-MFAUser"
             },
             "Action": "sts:AssumeRole",
             "Condition": {
@@ -167,10 +225,12 @@ weight: 250
     ]
 }
 ```
-arn:aws:iam::123456789012:user/VendorB-MFAUser のアカウント番号を自分のものに変更の上、JSONを記載し、次へを押してください。
+`arn:aws:iam::<account-id>:user/VendorB-MFAUser` のアカウント番号を自分のものに変更の上、JSONを記載し、次へを押してください。
 
 :::alert{type="warning"}
-実際にロールの作成を行う際は、ベンダーが保持している AWSアカウント、ユーザをプリンシパルとして登録します。
+こちらの IAM User は [リモート接続環境用 IAM User の設定](../../03_RemoteUser/03_01_IAMUser_MFA/index.md) で設定を行いますが、事前準備のCloudFormationによりすでに作成されています。
+
+また、実際にロールの作成を行う際は、ベンダーが保持している AWSアカウント、ユーザをプリンシパルとして登録します。
 本ワークショップではアカウントが1つしかないため、このアカウントで作成しています。
 :::
 

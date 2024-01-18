@@ -11,7 +11,7 @@ export class CdkForPrereqStack extends cdk.Stack {
     const {medVPC, vendVPC, venderA_SG, venderB_SG} = new Network(this, "Network")
 
     // IAM
-    // const iamUser = new VendorUser(this, "Vendor-MFAUser")
+    const iamUser = new VendorUser(this, "Vendor-MFAUser")
 
     const medServer = new MedServer(this, "MedServer", {
       medVPC: medVPC,

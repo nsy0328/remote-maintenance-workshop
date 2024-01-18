@@ -84,7 +84,7 @@ weight: 241
                 "kms:Decrypt",
                 "kms:GenerateDataKey"
             ],
-            "Resource": "arn:aws:kms:ap-northeast-1:123456789012:key/...kms-id...",
+            "Resource": "arn:aws:kms:ap-northeast-1:<account-id>:key/<kms-id>",
             "Effect": "Allow",
             "Sid": "KMSAllow"
         },
@@ -96,8 +96,8 @@ weight: 241
                 "s3:PutObject"
             ],
             "Resource": [
-                "arn:aws:s3:::your-bucket",
-                "arn:aws:s3:::your-bucket/*"
+                "arn:aws:s3:::<your-bucket-name>",
+                "arn:aws:s3:::<your-bucket-name>/*"
             ],
             "Effect": "Allow"
         }
@@ -106,19 +106,19 @@ weight: 241
 ```
 
 **設定項目**
-- **your-bucket** : s3-vendor-b-yymmdd (先ほど作成した S3 のバケットネーム)
-- **arn:aws:kms:../...kms-id...** : S3-KMS-VendB の ARN
+- **arn:aws:kms:../...kms-id...** : S3-KMS-VendorB の ARN
+- **<your-bucket-name>** : s3-vendor-b-yymmdd (先ほど作成した S3 のバケットネーム)
 
-::alert[ KMS (S3-KMS-VendB) の ARN は KMS コンソールページから作成した鍵を選択すると表示される、一般設定の画面から確認できます。]
+::alert[ KMS (S3-KMS-VendorB) の ARN は KMS コンソールページから作成した鍵を選択すると表示される、一般設定の画面から確認できます。]
 
 ![policy-edit](/static/02_RemoteSettingHand/02_04_EC2/policy_json_edit.png)
 
-4. 作成した S3 ReadWrite のポリシーに名前をつけます。
+1. 作成した S3 ReadWrite のポリシーに名前をつけます。
 
 ![policy-name](/static/02_RemoteSettingHand/02_04_EC2/policy_name.png)
 
 **設定項目**
-- **ポリシー名** : Allow-VendB-S3-ReadWrite
+- **ポリシー名** : Allow-VendorB-S3-ReadWrite
 
 5. 以上で踏み台サーバーが利用するためのロールが作成できました。
 

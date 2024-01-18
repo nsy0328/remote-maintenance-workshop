@@ -14,6 +14,8 @@ weight: 220
 
 では、一緒に S3 および EBS を暗号化するための CMK を作成していきましょう
 
+---
+
 ## 1. KMS の管理ページを開く
 
 ![kms-search](/static/02_RemoteSettingHand/02_02_KMS/kms_search.png)
@@ -44,7 +46,7 @@ weight: 220
 続いて、作成する CMK のエイリアスおよび、説明、タグを設定します。
 
 **設定項目**
-- **エイリアス** : S3-KMS-VendB
+- **エイリアス** : S3-KMS-VendorB
 - **説明** : CMK for Vendor B S3
 - **タグ** :
   - **タグキー** : Env
@@ -89,7 +91,7 @@ weight: 220
 上記 S3 の手順と同様の手順で、EBS の CMK を作成してください。
 
 **設定項目**
-- **エイリアス** : EBS-KMS-VendB
+- **エイリアス** : EBS-KMS-VendorB
 - **説明** : CMK for Vendor B EBS
 - **タグ** :
   - **タグキー** : Env

@@ -13,4 +13,5 @@ weight: 240
 - [a. IAM Role の作成](./02_04_01_IAM/index.md)
 - [b. セキュリティグループの作成](./02_04_02_SG/index.md)
 - [c. Amazon EC2 の作成](./02_04_03_Instance/index.md)
+- [d. 起動テンプレートの作成](./02_04_04_Temp/index.md)
 ---

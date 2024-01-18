@@ -1,13 +1,25 @@
 ---
-title: "CloudFormation スタックを起動する"
-weight: 140
+title: "リモート環境の自動起動 (CloudFormation)"
+weight: 420
 ---
-続いて、CloudFormationにより、今回の医療機関側のサーバの設定、およびリモート接続のためのAWS環境（VPC）を作成します。
+
+先ほどの起動テンプレートは、EC2 起動、停止の際利用するものでした。
+対して、こちらは新しくベンダーに対し、リモート環境を払い出す場合に利用するものになります。
+
+新しいベンダーに対して、リモート環境を払い出す場合、S3、KMS、EC2、IAM Role といった全てのリソースを作成する必要があります。
+こちらを自動化するため、事前準備でも利用した CloudFormation、いわゆる Infrastructures as Code (IaC) により、リソースを作成していきます。
+
+では、設定をしていきましょう。
+
+---
 
 1. こちらのボタンをクリックしてスタックを起動します。 :button[起動スタック]{iconName="external" iconAlign="right"}
-https://ap-northeast-1.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create?stackName=PreReqStack&templateURL=https://ee-assets-prod-us-east-1.s3.us-east-1.amazonaws.com/modules/6711a8753152469eb774315a0c2fad73/v1/template.yml
+https://ap-northeast-1.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create?stackName=PreReqStack&templateURL=https://ee-assets-prod-us-east-1.s3.us-east-1.amazonaws.com/modules/879ae828-6a2a-4fb1-9937-a0ebc2ded319/v1/template.yml
 
 ![CreateStack](/static/01_PreReq/01_04_CFn/cf_prep_template.png)
+
+## CloudFormation パラメータの設定
+
 
 2. すべてデフォルトのままにして、この画面とそれに続く2つの画面で **次へ** をクリックします。
 

@@ -3,9 +3,14 @@ title: "リモート接続環境用 IAM User の設定"
 weight: 310
 ---
 
-このセッションでは、事前準備の CloudFormation で作成した IAM User の MFA および、パスワードを設定し、 Vendor が踏み台サーバを利用する際に利用する IAM User の設定を行います。
+このセッションでは、事前準備の CloudFormation で作成した IAM User の MFA および、パスワードを設定し、 ベンダーが踏み台サーバを利用する際に利用する IAM User の設定を行います。
 
-::alert[実際に、IAM User を用意するのは各 Vendor になります。接続するためのアカウントを発行してもらい、接続用ロールのプリンシパルにユーザを指定してください。]
+:::alert{type="info"}
+[5.  リモート接続環境のベンダー接続ロールの設定 : 5-1. Role の種類を選択](../../02_RemoteSettingHand/02_05_ConnectRole/index.md#5-1-role-の種類を選択)にも記載しましたが、実際に、IAM User を用意するのは各ベンダーになります。
+接続するためのアカウントを発行してもらい、接続用ロールのプリンシパルにユーザを指定してください。
+:::
+
+---
 
 ## 1. IAM 管理ページを開く
 ![iam-search](/static/02_RemoteSettingHand/02_05_ConnectRole/iam_search.png)

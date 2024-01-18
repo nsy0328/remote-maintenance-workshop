@@ -8,13 +8,10 @@ const path = require('path');
 dotenv.config({path: path.join(__dirname, "../.env")});
 
 const app = new cdk.App();
-const vendorName: string = process.env.Vendor_Name ?? ''
 const serverName: string = process.env.Server_Name ?? ''
 new CdkForVendorStack(app, `CdkFor-${serverName}-Stack`, {
-  env: {
-    account: process.env.CDK_DEFAULT_ACCOUNT,
-    region: process.env.CDK_DEFAULT_REGION,
-  }
+  synthesizer: new cdk.DefaultStackSynthesizer({ generateBootstrapVersionRule: false }),
+  env: { account: process.env.CDK_DEFAULT_ACCOUNT, region: process.env.CDK_DEFAULT_REGION },
   /* If you don't specify 'env', this stack will be environment-agnostic.
    * Account/Region-dependent features and context lookups will not work,
    * but a single synthesized template can be deployed anywhere. */
@@ -29,5 +26,3 @@ new CdkForVendorStack(app, `CdkFor-${serverName}-Stack`, {
 
   /* For more information, see https://docs.aws.amazon.com/cdk/latest/guide/environments.html */
 });
-
-cdk.Tags.of(app).add("Env", vendorName);

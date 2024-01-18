@@ -1,4 +1,4 @@
-import { RemovalPolicy, Duration, CfnOutput, ScopedAws } from 'aws-cdk-lib'
+import { RemovalPolicy, Duration, CfnOutput, ScopedAws, Tags } from 'aws-cdk-lib'
 import { Construct } from 'constructs'
 import {
   aws_ec2 as ec2,
@@ -10,6 +10,7 @@ import {
 interface EC2Props {
   vendVPCId: string
   serverName: string
+  vendorName: string
   ipwhite: string
   s3Key: kms.Key
   ebsKey: kms.Key
@@ -19,8 +20,10 @@ export class RemoteBastion extends Construct {
   constructor(scope: Construct, id: string, props: EC2Props) {
     super(scope, id)
     // select vpc from vpc id
-    const vendVPC = ec2.Vpc.fromLookup(this, "vendVPC", {
-      vpcId: props.vendVPCId
+    const vendVPC = ec2.Vpc.fromVpcAttributes(this, "vendVPC", {
+      vpcId: props.vendVPCId,
+      availabilityZones: ScopedAws.availabilityZones,
+      privateSubnetIds: [],
     })
     // Create SSM Role
     const ssm_role = new iam.Role(this, `Rolefor${props.serverName}`, {
@@ -31,10 +34,11 @@ export class RemoteBastion extends Construct {
         ),
       ],
     })
+    const bucket_name = `s3-${props.serverName.toLowerCase()}`
 
     // Create S3 bucket 
-    const s3Bucket = new s3.Bucket(this, `permanent-bucket-${props.serverName.toLowerCase()}`, {
-      bucketName: `permanent-bucket-${props.serverName.toLowerCase()}`,
+    const s3Bucket = new s3.Bucket(this, bucket_name, {
+      bucketName: bucket_name,
       encryption: s3.BucketEncryption.KMS,
       encryptionKey: props.s3Key,
       removalPolicy: RemovalPolicy.DESTROY,
@@ -59,10 +63,11 @@ export class RemoteBastion extends Construct {
       ec2.Peer.anyIpv4(),
       ec2.Port.tcp(443)
     )
-    bastionEc2SecurityGroup.addEgressRule(
-      ec2.Peer.ipv4(props.ipwhite),
-      ec2.Port.icmpType(8)
-    )
+    // ping 応答
+    // bastionEc2SecurityGroup.addEgressRule(
+    //   ec2.Peer.ipv4(props.ipwhite),
+    //   ec2.Port.icmpType(8)
+    // )
     bastionEc2SecurityGroup.addEgressRule(
       ec2.Peer.ipv4(props.ipwhite), // ex) xxx.xxx.xxx.xxx/xx
       ec2.Port.tcp(22)

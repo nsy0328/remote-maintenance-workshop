@@ -9,16 +9,20 @@ Workshop冒頭でご紹介した「クラウドを用いた集約型リモート
 
 ![arch-overview](/static/02_RemoteSettingHand/02_detail_arch.png)
 
-また、**事前準備**で作成したアーキテクチャは以下のようになっている。
-CloudFormationでは、
-
-- 医療機関環境
-- リモート接続環境のネットワーク設定
-- 仮想サーバ (図左側のベンダー管理サーバ) 
-
-を作成し、各ベンダー管理サーバーはリモート接続環境の CIDR からくる RDP または SSH 通信のみを許可している。
-
+## 環境概要
 ![arch-prereq](/static/02_RemoteSettingHand/02_prereq_arch.png)
+
+また、[事前準備 (CloudFormation)](../01_PreReq/01_04_CFn/index.md) で作成したアーキテクチャは以下のようになっている。
+
+- 医療機関環境 (MedI-vpc)
+- リモート接続環境のネットワーク設定 (Vend-vpc)
+- 仮想サーバ (図左側のベンダー管理サーバ) 
+  - MedLinuxServer-VendorA (SSH)
+  - MedWinServer-VendorB (RDP)
+
+を作成し、各ベンダー管理サーバーはリモート接続環境の CIDR からの RDP または SSH 通信のみを許可している。
+
+
 
 ## これから作成するアーキテクチャ
 本モジュールでは上記したアーキテクチャのうち、リモート接続環境であるAWSアカウント内の

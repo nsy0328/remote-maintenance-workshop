@@ -731,6 +731,74 @@ Resources:
       VpcEndpointType: Gateway
     Metadata:
       aws:cdk:path: CdkForPrereqStack/Vend-vpc/S3Endpoint/Resource
+  VendorMFAUserVendorAMFAUserE83ED13F:
+    Type: AWS::IAM::User
+    Properties:
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/IAMUserChangePassword
+      UserName: VendorA-MFAUser
+    Metadata:
+      aws:cdk:path: CdkForPrereqStack/Vendor-MFAUser/VendorA-MFAUser/Resource
+  VendorMFAUserVendorAMFAUserDefaultPolicy84AF3897:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - iam:CreateVirtualMFADevice
+              - iam:DeactivateMFADevice
+              - iam:DeleteVirtualMFADevice
+              - iam:EnableMFADevice
+              - iam:ListMFADevices
+              - iam:ListVirtualMFADevices
+              - iam:ResyncMFADevice
+            Effect: Allow
+            Resource: "*"
+            Sid: AllowRegisterMFADevice
+        Version: "2012-10-17"
+      PolicyName: VendorMFAUserVendorAMFAUserDefaultPolicy84AF3897
+      Users:
+        - Ref: VendorMFAUserVendorAMFAUserE83ED13F
+    Metadata:
+      aws:cdk:path: CdkForPrereqStack/Vendor-MFAUser/VendorA-MFAUser/DefaultPolicy/Resource
+  VendorMFAUserVendorBMFAUser641A73E4:
+    Type: AWS::IAM::User
+    Properties:
+      ManagedPolicyArns:
+        - Fn::Join:
+            - ""
+            - - "arn:"
+              - Ref: AWS::Partition
+              - :iam::aws:policy/IAMUserChangePassword
+      UserName: VendorB-MFAUser
+    Metadata:
+      aws:cdk:path: CdkForPrereqStack/Vendor-MFAUser/VendorB-MFAUser/Resource
+  VendorMFAUserVendorBMFAUserDefaultPolicy7231CB1F:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Action:
+              - iam:CreateVirtualMFADevice
+              - iam:DeactivateMFADevice
+              - iam:DeleteVirtualMFADevice
+              - iam:EnableMFADevice
+              - iam:ListMFADevices
+              - iam:ListVirtualMFADevices
+              - iam:ResyncMFADevice
+            Effect: Allow
+            Resource: "*"
+            Sid: AllowRegisterMFADevice
+        Version: "2012-10-17"
+      PolicyName: VendorMFAUserVendorBMFAUserDefaultPolicy7231CB1F
+      Users:
+        - Ref: VendorMFAUserVendorBMFAUser641A73E4
+    Metadata:
+      aws:cdk:path: CdkForPrereqStack/Vendor-MFAUser/VendorB-MFAUser/DefaultPolicy/Resource
   MedServerMedLinuxServerVendorAKeyPair73E833C6:
     Type: AWS::EC2::KeyPair
     Properties:
@@ -866,7 +934,7 @@ Resources:
   CDKMetadata:
     Type: AWS::CDK::Metadata
     Properties:
-      Analytics: v2:deflate64:H4sIAAAAAAAA/1WRwW7CMAyGn2X3kA0OE1dUIYQmbVGZuE5pajZD61SJA0JV331p067s5D+fHft3spLrV/nypG9+YcrLosJCtgfW5iIi+mrBrGSbneioMgXgkL4zSwSG0ZKIPLeBQRzABId83zkbmh7/B8fGiNRDqFBUaA6hIOCh8E8NnT51UcHMZ7bx3hrU09jtXvXhXfNOM9z0XSiH1yjnfnticFFPBcnAeNpwXPGnBmIxkuhxS2VjkXgsfTy+wV1pdGJPnjUZSAOS7gTqWra5Tc6nOKWVsyesoOt6+BG4CSxy8Da41EZpp2uIXofLD4n40CX2C3eCbAny7J+vy7Vc9t919ogLF4ixBpmn+At4R8pQygEAAA==
+      Analytics: v2:deflate64:H4sIAAAAAAAA/1WRwW7CMAyGn2X3kA0OE1eEEEKTtqjduE5papihdarEAaGq7760aQc7+c8X57cdL+TyVb486aufmfI8q7CQbc7anEVE3y2YhWzXB9qrtQJwSMe1JQLDaElEntnAIHIwwSHfts6Gpsf/wb4xInkIFYoKTR4KAh4S/9Tg9KmLCu78zlbeW4N6KrvZqT68a95qhqu+CeXwEuXdb0cMLuopITUwnlYcR/ypgViMJPa4obKxSDymPh7f4KY0OrEjz5oMpAJJdwJ1LdsvD67HQ1Q2TjnUHFVm01xTnB4rZw9YQdf18CNwE1hk4G1wqYjSTtfAyfrxIq6hxP47OkG2BHnyz5f5Us77ZZ484swFYqxBZin+AuQ7CkboAQAA
     Metadata:
       aws:cdk:path: CdkForPrereqStack/CDKMetadata/Default
     Condition: CDKMetadataAvailable
@@ -884,6 +952,12 @@ Outputs:
       Fn::GetAtt:
         - NetworkSGforMedVendorB1D054501
         - GroupId
+  VendorMFAUserVendorAUserName5F1C99AB:
+    Value:
+      Ref: VendorMFAUserVendorAMFAUserE83ED13F
+  VendorMFAUserVendorBUserName2F6FCCFE:
+    Value:
+      Ref: VendorMFAUserVendorBMFAUser641A73E4
   MedServerGetLinuxSSHKeyCommandADC20F76:
     Value:
       Fn::Join:

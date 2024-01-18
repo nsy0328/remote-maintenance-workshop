@@ -6,6 +6,8 @@ weight: 242
 本ハンズオンでは、医療機関側への接続制御を、Security Group の Outbound ルールにベンダーが管理する医療機関側のサーバの IP アドレスをホワイト形式で登録することで実現する。
 そのため、踏み台サーバの作成に先立ち、セキュリティグループの作成を行う。
 
+---
+
 ## 1. セキュリティグループ管理ページを開く
 ![ec2-search](/static/02_RemoteSettingHand/02_04_EC2/ec2_search.png)
 
@@ -48,7 +50,7 @@ weight: 242
   - **説明** : for SSM
 - **アウトバウンドルール 2** : 
   - **タイプ** : RDP
-  - **送信先タイプ** : カスタム (接続先 Windowws サーバのプライベート IP アドレス)
+  - **送信先タイプ** : カスタム (接続先 Windowws サーバのプライベート IP アドレス : CloudFormation Output に記載の MedServerMedWinServerVendorBIPxxx )
   - **説明** : for RDP
 
 ### 3-3. タグの設定

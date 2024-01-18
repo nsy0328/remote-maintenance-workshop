@@ -10,6 +10,7 @@ AWS Systems Manager の機能である [Fleet Manager](https://docs.aws.amazon.c
 今回は踏み台サーバへのアクセスに、この Fleet Manager を用いることで、秘密鍵の管理、ポートの解放を行わないセキュアなリモート接続を構築します。
 では、以下手順により Fleet Manager を有効化しましょう。
 
+---
 
 1.  [コンソールのホーム画面](https://console.aws.amazon.com/console) から画面上部のサービス検索バーに移動し、「Fleet Manager」と入力して検索し、Fleet Manager を選択します。
 
