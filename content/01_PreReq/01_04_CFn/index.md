@@ -4,12 +4,12 @@ weight: 140
 ---
 続いて、CloudFormationにより、今回の医療機関側のサーバの設定、およびリモート接続のためのAWS環境（VPC）を作成します。
 
-1. こちらのボタンをクリックしてスタックを起動します。 :button[起動スタック]{iconName="external" iconAlign="right"}
-https://ap-northeast-1.console.aws.amazon.com/cloudformation/home?region=us-west-2#/stacks/create?stackName=PreReqStack&templateURL=https://ee-assets-prod-us-east-1.s3.us-east-1.amazonaws.com/modules/6711a8753152469eb774315a0c2fad73/v1/template.yml
+1. こちらのボタンをクリックしてスタックを起動します。 :button[起動スタック]{iconName="external" iconAlign="right" href="https://ap-northeast-1.console.aws.amazon.com/cloudformation/home?region=ap-northeast-1#/stacks/create?stackName=PreReqStack&templateURL=https://ws-assets-us-east-1/879ae828-6a2a-4fb1-9937-a0ebc2ded319/prereq-temp.yml"}
+
 
 ![CreateStack](/static/01_PreReq/01_04_CFn/cf_prep_template.png)
 
-2. すべてデフォルトのままにして、この画面とそれに続く2つの画面で **次へ** をクリックします。
+1. すべてデフォルトのままにして、この画面とそれに続く2つの画面で **次へ** をクリックします。
 
 ![IAMResouce](/static/01_PreReq/01_04_CFn/cf_iam_resource.png)
 
